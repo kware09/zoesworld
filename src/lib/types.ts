@@ -120,3 +120,15 @@ export interface ParentConfig {
   rewardClaimed: boolean;
   maxDailyStars: number | null;
 }
+
+export interface Profile {
+  id: string;
+  name: string;
+  emoji: string;
+  createdAt: string;
+}
+
+export interface ProfileRegistry {
+  profiles: Profile[];
+  activeProfileId: string;
+}

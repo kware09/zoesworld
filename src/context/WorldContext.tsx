@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import type { Decoration } from '@/lib/types';
 import { DEFAULT_DECORATIONS } from '@/lib/constants';
-import { loadState, saveState, STORAGE_KEYS } from '@/lib/storage';
+import { loadState, saveState, type ProfileKeys } from '@/lib/storage';
 import { useGame } from '@/context/GameContext';
 
 // --- Context interface ---
@@ -40,7 +40,7 @@ function initializeDecorations(): Decoration[] {
   }));
 }
 
-export function WorldProvider({ children }: { children: React.ReactNode }) {
+export function WorldProvider({ children, profileKeys }: { children: React.ReactNode; profileKeys: ProfileKeys }) {
   const { spendStars } = useGame();
   const [decorations, setDecorations] = useState<Decoration[]>(() =>
     initializeDecorations()
@@ -51,7 +51,7 @@ export function WorldProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function hydrate() {
       const saved = await loadState<Decoration[]>(
-        STORAGE_KEYS.DECORATIONS,
+        profileKeys.DECORATIONS,
         initializeDecorations()
       );
       setDecorations(saved);
@@ -63,8 +63,8 @@ export function WorldProvider({ children }: { children: React.ReactNode }) {
   // Persist decorations when they change
   useEffect(() => {
     if (!hydrated) return;
-    saveState(STORAGE_KEYS.DECORATIONS, decorations);
-  }, [decorations, hydrated]);
+    saveState(profileKeys.DECORATIONS, decorations);
+  }, [decorations, hydrated, profileKeys]);
 
   // Purchase a decoration by id. Returns false if the player cannot afford it.
   const purchaseDecoration = useCallback(

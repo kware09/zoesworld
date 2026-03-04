@@ -32,8 +32,9 @@ import { getWordEntriesByStage, getSentenceEntries } from '@/lib/word-data';
 import {
   loadState,
   saveState,
-  clearAll,
-  STORAGE_KEYS,
+  clearProfileData,
+  GLOBAL_KEYS,
+  type ProfileKeys,
 } from '@/lib/storage';
 
 // --- Default values ---
@@ -96,7 +97,7 @@ export function useGame(): GameContextValue {
   return context;
 }
 
-export function GameProvider({ children }: { children: React.ReactNode }) {
+export function GameProvider({ children, profileKeys }: { children: React.ReactNode; profileKeys: ProfileKeys }) {
   const [player, setPlayer] = useState<PlayerState>(DEFAULT_PLAYER);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [mastery, setMastery] = useState<Record<string, WordMastery>>({});
@@ -112,10 +113,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   // Load state from API/localStorage on mount
   useEffect(() => {
     async function hydrate() {
-      const savedPlayer = await loadState<PlayerState>(STORAGE_KEYS.PLAYER, DEFAULT_PLAYER);
-      const savedSession = await loadState<Session | null>(STORAGE_KEYS.CURRENT_SESSION, null);
-      const savedMastery = await loadState<Record<string, WordMastery>>(STORAGE_KEYS.MASTERY, {});
-      const savedParentConfig = await loadState<ParentConfig>(STORAGE_KEYS.PARENT_CONFIG, DEFAULT_PARENT_CONFIG);
+      const savedPlayer = await loadState<PlayerState>(profileKeys.PLAYER, DEFAULT_PLAYER);
+      const savedSession = await loadState<Session | null>(profileKeys.CURRENT_SESSION, null);
+      const savedMastery = await loadState<Record<string, WordMastery>>(profileKeys.MASTERY, {});
+      const savedParentConfig = await loadState<ParentConfig>(GLOBAL_KEYS.PARENT_CONFIG, DEFAULT_PARENT_CONFIG);
 
       setPlayer(savedPlayer);
       setCurrentSession(savedSession);
@@ -124,16 +125,16 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       setHydrated(true);
     }
     hydrate();
-  }, []);
+  }, [profileKeys]);
 
   // Persist all state in a single effect to reduce render-cycle overhead
   useEffect(() => {
     if (!hydrated) return;
-    saveState(STORAGE_KEYS.PLAYER, player);
-    saveState(STORAGE_KEYS.CURRENT_SESSION, currentSession);
-    saveState(STORAGE_KEYS.MASTERY, mastery);
-    saveState(STORAGE_KEYS.PARENT_CONFIG, parentConfig);
-  }, [player, currentSession, mastery, parentConfig, hydrated]);
+    saveState(profileKeys.PLAYER, player);
+    saveState(profileKeys.CURRENT_SESSION, currentSession);
+    saveState(profileKeys.MASTERY, mastery);
+    saveState(GLOBAL_KEYS.PARENT_CONFIG, parentConfig);
+  }, [player, currentSession, mastery, parentConfig, hydrated, profileKeys]);
 
   // --- Session ---
 
@@ -332,12 +333,16 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const resetProgress = useCallback(() => {
-    clearAll();
+    // Extract profile ID from the namespaced key (e.g. "zw_zoe_player" -> "zoe")
+    const match = profileKeys.PLAYER.match(/^zw_(.+)_player$/);
+    if (match) {
+      clearProfileData(match[1]);
+    }
     setPlayer(DEFAULT_PLAYER);
     setCurrentSession(null);
     setMastery({});
     setParentConfig(DEFAULT_PARENT_CONFIG);
-  }, []);
+  }, [profileKeys]);
 
   // --- Context value ---
 

@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getValue, setValue } from '@/lib/server/json-store';
 
-const VALID_KEYS = [
-  'zw_player',
-  'zw_sessions',
-  'zw_mastery',
-  'zw_decorations',
-  'zw_parent_config',
-  'zw_current_session',
-];
+// Matches global keys (zw_profiles, zw_parent_config) and
+// profile-namespaced keys (zw_{profileId}_player, etc.)
+const VALID_KEY_PATTERN = /^zw_([a-z0-9]+_)?(player|sessions|mastery|decorations|parent_config|current_session|profiles)$/;
+
+function isValidKey(key: string): boolean {
+  return VALID_KEY_PATTERN.test(key);
+}
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ key: string }> }
 ) {
   const { key } = await params;
-  if (!VALID_KEYS.includes(key)) {
+  if (!isValidKey(key)) {
     return NextResponse.json({ error: 'Invalid key' }, { status: 400 });
   }
 
@@ -28,7 +27,7 @@ export async function PUT(
   { params }: { params: Promise<{ key: string }> }
 ) {
   const { key } = await params;
-  if (!VALID_KEYS.includes(key)) {
+  if (!isValidKey(key)) {
     return NextResponse.json({ error: 'Invalid key' }, { status: 400 });
   }
 

@@ -1,13 +1,27 @@
 'use client';
 
+import { useState } from 'react';
 import TreehouseScene from '@/components/home/TreehouseScene';
 import HomeMenuButton from '@/components/home/HomeMenuButton';
 import HiddenAccessTrigger from '@/components/parent/HiddenAccessTrigger';
 import StarCounter from '@/components/layout/StarCounter';
+import ProfileAvatar from '@/components/profile/ProfileAvatar';
+import ProfilePicker from '@/components/profile/ProfilePicker';
 
 export default function Home() {
+  const [showProfilePicker, setShowProfilePicker] = useState(false);
+
   return (
     <main className="flex min-h-screen flex-col items-center bg-cream px-4 pb-8">
+      {/* Profile switcher */}
+      <div className="mt-4 self-start">
+        <ProfileAvatar onClick={() => setShowProfilePicker(true)} />
+      </div>
+
+      {showProfilePicker && (
+        <ProfilePicker onClose={() => setShowProfilePicker(false)} />
+      )}
+
       {/* Treehouse illustration */}
       <TreehouseScene />
 

@@ -4,9 +4,10 @@ import {
   WordMastery,
   Decoration,
   ParentConfig,
+  ProfileRegistry,
 } from './types';
 
-// Storage keys
+// Legacy storage keys (used for migration only)
 const STORAGE_KEYS = {
   PLAYER: 'zw_player',
   SESSIONS: 'zw_sessions',
@@ -18,6 +19,25 @@ const STORAGE_KEYS = {
 
 export { STORAGE_KEYS };
 
+// Global keys (not namespaced per profile)
+export const GLOBAL_KEYS = {
+  PROFILES: 'zw_profiles',
+  PARENT_CONFIG: 'zw_parent_config',
+} as const;
+
+// Get profile-namespaced storage keys
+export function getProfileKeys(profileId: string) {
+  return {
+    PLAYER: `zw_${profileId}_player`,
+    SESSIONS: `zw_${profileId}_sessions`,
+    MASTERY: `zw_${profileId}_mastery`,
+    DECORATIONS: `zw_${profileId}_decorations`,
+    CURRENT_SESSION: `zw_${profileId}_current_session`,
+  } as const;
+}
+
+export type ProfileKeys = ReturnType<typeof getProfileKeys>;
+
 // Type mapping for storage keys
 export interface StorageMap {
   zw_player: PlayerState;
@@ -26,6 +46,7 @@ export interface StorageMap {
   zw_decorations: Decoration[];
   zw_parent_config: ParentConfig;
   zw_current_session: Session;
+  zw_profiles: ProfileRegistry;
 }
 
 /**
@@ -97,12 +118,32 @@ export function saveState<T>(key: string, value: T): void {
 }
 
 /**
+ * Clear a specific profile's data from both localStorage and API.
+ */
+export function clearProfileData(profileId: string): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const keys = getProfileKeys(profileId);
+  Object.values(keys).forEach((key) => {
+    localStorage.removeItem(key);
+    fetch(`/api/state/${key}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value: null }),
+    }).catch(() => {});
+  });
+}
+
+/**
  * Clear all Zoe's World data from both localStorage and API.
+ * @deprecated Use clearProfileData(profileId) instead
  */
 export function clearAll(): void {
   if (typeof window === 'undefined') {
     return;
   }
+  // Clear legacy keys
   Object.values(STORAGE_KEYS).forEach((key) => {
     localStorage.removeItem(key);
     fetch(`/api/state/${key}`, {

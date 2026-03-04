@@ -6,6 +6,7 @@ import ProgressDashboard from '@/components/parent/ProgressDashboard';
 import DifficultySelector from '@/components/parent/DifficultySelector';
 import RewardConfig from '@/components/parent/RewardConfig';
 import WordListManager from '@/components/parent/WordListManager';
+import ProfileManager from '@/components/parent/ProfileManager';
 import { useGame } from '@/context/GameContext';
 
 export default function ParentPanel() {
@@ -34,6 +35,16 @@ export default function ParentPanel() {
         </header>
 
         <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-8">
+          {/* Profiles */}
+          <section>
+            <h2 className="font-display text-base font-bold text-bark mb-3">
+              Profiles
+            </h2>
+            <ProfileManager />
+          </section>
+
+          <hr className="border-bark/10" />
+
           {/* Progress Dashboard */}
           <section>
             <h2 className="font-display text-base font-bold text-bark mb-3">
