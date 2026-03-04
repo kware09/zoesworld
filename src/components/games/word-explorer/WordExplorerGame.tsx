@@ -108,16 +108,16 @@ export default function WordExplorerGame() {
     setShowFeedback(true);
   }, [currentWord, currentSentence, wordId, rounds, recordAttempt]);
 
-  // Auto-advance after blend result is shown (2 second timeout as fallback)
-  useEffect(() => {
-    if (!showBlendResult || showFeedback) return;
-
-    const timeout = setTimeout(() => {
-      handleAdvance();
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [showBlendResult, showFeedback, handleAdvance]);
+  // Skip ahead: activate all tiles and show the blended word
+  const handleSkip = useCallback(() => {
+    if ((!currentWord && !currentSentence) || showBlendResult || isAdvancing.current) return;
+    isAdvancing.current = true;
+    setActivatedPhonemes(tiles.map((_, i) => i));
+    setTimeout(() => {
+      setShowBlendResult(true);
+      playWord(blendedText);
+    }, 400);
+  }, [currentWord, currentSentence, showBlendResult, tiles, playWord, blendedText]);
 
   // Handle feedback dismiss
   const handleFeedbackDismiss = useCallback(() => {
@@ -192,6 +192,17 @@ export default function WordExplorerGame() {
         })}
       </div>
 
+      {/* Skip button - shown while tapping letters */}
+      {!showBlendResult && !showFeedback && tiles.length > 0 && (
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="rounded-2xl bg-lavender/60 px-6 py-3 font-display text-lg text-bark/70 shadow-soft transition-transform hover:scale-105 active:scale-95"
+        >
+          I know this word!
+        </button>
+      )}
+
       {/* Blended word/sentence display */}
       {showBlendResult && (
         <div className="flex flex-col items-center gap-4 animate-fade-in">
@@ -199,13 +210,22 @@ export default function WordExplorerGame() {
             {blendedText}
           </p>
           {!showFeedback && (
-            <button
-              type="button"
-              onClick={handleAdvance}
-              className="touch-target rounded-2xl bg-meadow px-8 py-4 font-display text-xl text-white shadow-soft transition-transform hover:scale-105 active:scale-95"
-            >
-              I read it!
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => playWord(blendedText)}
+                className="touch-target rounded-2xl bg-sky/30 px-6 py-4 font-display text-xl text-bark/70 shadow-soft transition-transform hover:scale-105 active:scale-95"
+              >
+                Hear again
+              </button>
+              <button
+                type="button"
+                onClick={handleAdvance}
+                className="touch-target rounded-2xl bg-meadow px-8 py-4 font-display text-xl text-white shadow-soft transition-transform hover:scale-105 active:scale-95"
+              >
+                I read it!
+              </button>
+            </div>
           )}
         </div>
       )}

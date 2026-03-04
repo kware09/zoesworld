@@ -18,6 +18,14 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Zoe's World",
   description: "A calm, playful phonics practice world",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: "Zoe's World",
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 };
 
 export default function RootLayout({
@@ -27,6 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="theme-color" content="#FFF8F0" />
+      </head>
       <body className={`${fredoka.variable} ${nunito.variable} antialiased`}>
         <Providers>
           {children}
