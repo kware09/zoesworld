@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "Bash(npx next build)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(npx next dev --port 3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(for path in /games /games/robot-talk /games/sound-ninja /games/word-explorer /games/result /decorate /rewards /parent)",
+      "Bash(do echo -n \"$path: \")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000$path\")",
+      "Bash(done)",
+      "Bash(for path in / /games /games/robot-talk /games/sound-ninja /games/word-explorer /games/result /decorate /rewards /parent)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:3000$path\" --max-time 15)",
+      "Bash(npx kill-port 3002)",
+      "Bash(taskkill //f //im \"node.exe\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Kieran.Ware\\Git\\zoesworld\\src\\app\\api\\state"
+    ]
+  }
+}

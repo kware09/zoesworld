@@ -1,0 +1,60 @@
+{
+  "level1_cvc": [
+    "cat",
+    "dog",
+    "sun",
+    "map",
+    "tap",
+    "hat",
+    "run",
+    "sit",
+    "cup",
+    "bed",
+    "pen",
+    "pig",
+    "log",
+    "jam",
+    "bat"
+  ],
+  "level2_digraphs": [
+    "ship",
+    "shop",
+    "chat",
+    "chin",
+    "thin",
+    "bath",
+    "rush",
+    "wish"
+  ],
+  "level3_blends": [
+    "frog",
+    "flag",
+    "trap",
+    "spin",
+    "clap",
+    "plug",
+    "stop"
+  ],
+  "sound_manipulation_examples": [
+    {
+      "word": "bat",
+      "remove": "b",
+      "result": "at"
+    },
+    {
+      "word": "cup",
+      "remove": "c",
+      "result": "up"
+    },
+    {
+      "word": "ship",
+      "remove": "sh",
+      "result": "ip"
+    },
+    {
+      "word": "pin",
+      "change": "i->a",
+      "result": "pan"
+    }
+  ]
+}
