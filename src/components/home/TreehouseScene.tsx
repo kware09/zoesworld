@@ -1,6 +1,47 @@
 'use client';
 
+import { useWorld } from '@/context/WorldContext';
+import type { Decoration } from '@/lib/types';
+
+// Fixed positions for each decoration, using percentage-based positioning
+const DECORATION_POSITIONS: Record<string, { bottom: string; left: string; size: string }> = {
+  // Treehouse decorations - positioned on/around the treehouse body
+  curtains:  { bottom: '56%', left: '30%', size: 'text-base md:text-lg' },
+  lamp:      { bottom: '56%', left: '64%', size: 'text-base md:text-lg' },
+  bookshelf: { bottom: '50%', left: '24%', size: 'text-sm md:text-base' },
+  rug:       { bottom: '42%', left: '50%', size: 'text-sm md:text-base' },
+  painting:  { bottom: '62%', left: '50%', size: 'text-sm md:text-base' },
+  // Garden decorations - positioned along the grass area
+  sunflower: { bottom: '4%', left: '8%',  size: 'text-lg md:text-2xl' },
+  tulip:     { bottom: '4%', left: '85%', size: 'text-lg md:text-2xl' },
+  butterfly: { bottom: '28%', left: '82%', size: 'text-lg md:text-2xl' },
+  mushroom:  { bottom: '4%', left: '72%', size: 'text-base md:text-lg' },
+  rainbow:   { bottom: '75%', left: '12%', size: 'text-2xl md:text-3xl' },
+  // Animals - positioned on the ground around the tree
+  fox:       { bottom: '4%', left: '18%', size: 'text-xl md:text-3xl' },
+  owl:       { bottom: '65%', left: '76%', size: 'text-xl md:text-2xl' },
+  rabbit:    { bottom: '4%', left: '60%', size: 'text-xl md:text-3xl' },
+  deer:      { bottom: '4%', left: '38%', size: 'text-xl md:text-3xl' },
+};
+
+function PlacedDecoration({ decoration }: { decoration: Decoration }) {
+  const pos = DECORATION_POSITIONS[decoration.id];
+  if (!pos) return null;
+
+  return (
+    <div
+      className={`absolute ${pos.size} animate-fade-in select-none`}
+      style={{ bottom: pos.bottom, left: pos.left, transform: 'translateX(-50%)' }}
+      title={decoration.name}
+    >
+      {decoration.emoji}
+    </div>
+  );
+}
+
 export default function TreehouseScene() {
+  const { unlockedDecorations } = useWorld();
+
   return (
     <div className="relative mx-auto h-[200px] w-full max-w-md overflow-hidden md:h-[300px]">
       {/* Sky background */}
@@ -80,8 +121,10 @@ export default function TreehouseScene() {
       <div className="absolute bottom-2 right-[20%] text-sm">🌸</div>
       <div className="absolute bottom-3 right-[35%] text-xs">🌼</div>
 
-      {/* Placeholder for unlocked animals */}
-      {/* Animals will be rendered here when unlocked */}
+      {/* Unlocked decorations */}
+      {unlockedDecorations.map((d) => (
+        <PlacedDecoration key={d.id} decoration={d} />
+      ))}
     </div>
   );
 }
