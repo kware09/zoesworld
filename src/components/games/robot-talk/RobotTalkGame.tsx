@@ -6,7 +6,7 @@ import { useGame } from '@/context/GameContext';
 import { useAudio } from '@/hooks/useAudio';
 import { selectWord, generateBlendingOptions, selectSentence, generateSentenceBlendingOptions } from '@/lib/game-engine';
 import { ROUNDS_PER_GAME, ENCOURAGEMENT_MESSAGES } from '@/lib/constants';
-import { WORD_EMOJI_MAP } from '@/lib/word-data';
+import { getWordImagePath } from '@/lib/word-data';
 import type { GameResult, RoundResult, GameRound, SentenceEntry } from '@/lib/types';
 import GameShell from '@/components/games/GameShell';
 import AnswerOption from '@/components/games/AnswerOption';
@@ -194,7 +194,7 @@ export default function RobotTalkGame() {
               <AnswerOption
                 key={option}
                 word={option}
-                emoji={isSentenceMode ? undefined : WORD_EMOJI_MAP[option]}
+                imageSrc={isSentenceMode ? undefined : getWordImagePath(option)}
                 state={answerStates[option] ?? 'default'}
                 onClick={() => handleAnswer(option)}
               />
