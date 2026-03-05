@@ -26,6 +26,8 @@ export default function WordExplorerGame() {
 
   const recentlyUsedWords = useRef<string[]>([]);
   const isAdvancing = useRef(false);
+  const masteryRef = useRef(mastery);
+  masteryRef.current = mastery;
   const isSentenceMode = effectiveDifficulty === 5;
 
   // Pick a new word/sentence for the current round
@@ -36,7 +38,7 @@ export default function WordExplorerGame() {
       setCurrentSentence(sentence);
       setCurrentWord(null);
     } else {
-      const word = selectWord(effectiveDifficulty, mastery, recentlyUsedWords.current);
+      const word = selectWord(effectiveDifficulty, masteryRef.current, recentlyUsedWords.current);
       recentlyUsedWords.current = [...recentlyUsedWords.current.slice(-9), word.word];
       setCurrentWord(word);
       setCurrentSentence(null);
@@ -45,7 +47,7 @@ export default function WordExplorerGame() {
     setShowBlendResult(false);
     setShowFeedback(false);
     isAdvancing.current = false;
-  }, [effectiveDifficulty, mastery, isSentenceMode]);
+  }, [effectiveDifficulty, isSentenceMode]);
 
   // Pick word on mount and when round changes
   useEffect(() => {
