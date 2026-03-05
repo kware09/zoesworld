@@ -44,7 +44,7 @@ export default function RobotTalkGame() {
       setAttempts(0);
 
       // Play the token sequence like phonemes — slow and deliberate
-      playPhonemes(sentence.tokens, 1000);
+      playPhonemes(sentence.tokens, 700);
     } else {
       // Stages 1-4: word blending
       const targetWord = selectWord(effectiveDifficulty, mastery, recentlyUsedWords.current);
@@ -61,7 +61,7 @@ export default function RobotTalkGame() {
       setAttempts(0);
 
       // Auto-play the phoneme sequence — slow and deliberate for Robot Talk
-      playPhonemes(targetWord.phonemes, 1000);
+      playPhonemes(targetWord.phonemes, 700);
     }
   }, [effectiveDifficulty, mastery, playPhonemes, isSentenceMode]);
 
@@ -163,9 +163,9 @@ export default function RobotTalkGame() {
 
   const handlePlaySound = useCallback(() => {
     if (currentGameRound) {
-      playPhonemes(currentGameRound.targetWord.phonemes, 1000);
+      playPhonemes(currentGameRound.targetWord.phonemes, 700);
     } else if (currentSentenceRound) {
-      playPhonemes(currentSentenceRound.entry.tokens, 1000);
+      playPhonemes(currentSentenceRound.entry.tokens, 700);
     }
   }, [currentGameRound, currentSentenceRound, playPhonemes]);
 
